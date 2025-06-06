@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Verge Wastes - Lawless Territories</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        margin: 0;
+        padding: 10px;
+        background: #0f0f0f !important;
+        font-family: 'Courier New', monospace;
+        color: #e0e0e0 !important;
+        line-height: 1.4;
+    }
+
+    .title {
+        text-align: center;
+        font-size: 18px;
+        color: #fff !important;
+        margin-bottom: 15px;
+        text-shadow: 0 0 10px rgba(255, 100, 50, 0.7);
+        background: rgba(0, 0, 0, 0.9) !important;
+        padding: 8px;
+        border-radius: 6px;
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 12px;
+        color: #ff6432 !important;
+        margin-bottom: 20px;
+        background: rgba(0, 0, 0, 0.8) !important;
+        padding: 6px;
+        border-radius: 4px;
+    }
+
+    .map-container {
+        max-width: 100%;
+        width: 100%;
+        min-height: 80vh;
+        position: relative;
+        background: radial-gradient(ellipse at center, #2a1a0f 0%, #1a0f0f 50%, #0f0f0f 100%);
+        border: 3px solid;
+        border-image: linear-gradient(45deg, 
+            rgba(255, 100, 50, 0.8) 0%, 
+            rgba(200, 50, 25, 0.9) 25%, 
+            rgba(255, 150, 0, 0.8) 50%,
+            rgba(150, 75, 25, 0.9) 75%,
+            rgba(255, 100, 50, 0.8) 100%) 1;
+        border-radius: 10px;
+        padding: 15px;
+        overflow: hidden;
+        animation: wasteland-glow 5s infinite ease-in-out;
+    }
+
+    @keyframes wasteland-glow {
+        0%, 100% { 
+            filter: drop-shadow(0 0 15px rgba(255, 100, 50, 0.4));
+        }
+        50% { 
+            filter: drop-shadow(0 0 25px rgba(255, 150, 0, 0.7));
+        }
+    }
+
+    .territory-container {
+        margin-bottom: 25px;
+        border: 2px solid;
+        border-radius: 12px;
+        padding: 15px;
+        position: relative;
+    }
+
+    .scorch-territory {
+        border-color: rgba(255, 100, 50, 0.6);
+        background: rgba(255, 100, 50, 0.08);
+    }
+
+    .druin-territory {
+        border-color: rgba(150, 150, 150, 0.6);
+        background: rgba(150, 150, 150, 0.08);
+    }
+
+    .crux-territory {
+        border-color: rgba(100, 200, 150, 0.6);
+        background: rgba(100, 200, 150, 0.08);
+    }
+
+    .territory-header {
+        text-align: center;
+        font-size: 16px;
+        color: #ff6432 !important;
+        margin-bottom: 15px;
+        font-weight: bold;
+        text-shadow: 0 0 5px rgba(255, 100, 50, 0.7);
+    }
+
+    .zones-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    @media (max-width: 480px) {
+        .zones-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+    }
+
+    .zone {
+        border: 2px solid;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 11px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-height: 75px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        border-style: dashed;
+    }
+
+    .zone:active {
+        transform: scale(0.98);
+    }
+
+    .zone-title {
+        font-weight: bold;
+        margin-bottom: 4px;
+        font-size: 12px;
+    }
+
+    .zone-subtitle {
+        font-size: 9px;
+        opacity: 0.8;
+        margin-top: 2px;
+    }
+
+    /* Scorch Rift Zones */
+    .volcanic-core {
+        background: rgba(255, 100, 50, 0.25);
+        border-color: #ff6432;
+        color: #ff6432;
+    }
+
+    .ash-markets {
+        background: rgba(200, 80, 40, 0.25);
+        border-color: #c85028;
+        color: #c85028;
+    }
+
+    .thermal-warrens {
+        background: rgba(255, 150, 100, 0.25);
+        border-color: #ff9664;
+        color: #ff9664;
+    }
+
+    .clan-territories {
+        background: rgba(180, 60, 30, 0.25);
+        border-color: #b43c1e;
+        color: #b43c1e;
+    }
+
+    /* Druin Fields Zones */
+    .crash-sites {
+        background: rgba(150, 150, 150, 0.25);
+        border-color: #969696;
+        color: #969696;
+    }
+
+    .salvage-yards {
+        background: rgba(120, 120, 120, 0.25);
+        border-color: #787878;
+        color: #787878;
+    }
+
+    .tech-graveyards {
+        background: rgba(180, 180, 180, 0.25);
+        border-color: #b4b4b4;
+        color: #b4b4b4;
+    }
+
+    .signal-zones {
+        background: rgba(100, 100, 100, 0.25);
+        border-color: #646464;
+        color: #646464;
+    }
+
+    /* Cruxwater Zones */
+    .floating-settlements {
+        background: rgba(100, 200, 150, 0.25);
+        border-color: #64c896;
+        color: #64c896;
+    }
+
+    .toxic-spirals {
+        background: rgba(80, 160, 120, 0.25);
+        border-color: #50a078;
+        color: #50a078;
+    }
+
+    .smuggler-routes {
+        background: rgba(120, 220, 170, 0.25);
+        border-color: #78dcaa;
+        color: #78dcaa;
+    }
+
+    .water-clans {
+        background: rgba(60, 180, 130, 0.25);
+        border-color: #3cb482;
+        color: #3cb482;
+    }
+
+    .danger-warning {
+        grid-column: 1 / -1;
+        background: rgba(255, 50, 50, 0.2);
+        border: 2px dashed #ff3232;
+        color: #ff3232 !important;
+        text-align: center;
+        padding: 8px;
+        margin: 10px 0;
+        border-radius: 6px;
+        font-size: 10px;
+        animation: danger-pulse 2s infinite;
+    }
+
+    @keyframes danger-pulse {
+        0%, 100% { opacity: 0.7; }
+        50% { opacity: 1; }
+    }
+
+    .faction-bases {
+        background: rgba(0, 0, 0, 0.9) !important;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #444;
+        margin-top: 15px;
+    }
+
+    .faction-title {
+        color: #fff !important;
+        font-weight: bold;
+        margin-bottom: 8px;
+        font-size: 12px;
+    }
+
+    .faction-item {
+        font-size: 10px;
+        margin: 4px 0;
+        padding: 3px 6px;
+        border-left: 3px solid;
+        background: rgba(255, 255, 255, 0.02);
+        color: #e0e0e0 !important;
+    }
+
+    .faction-item strong {
+        color: #fff !important;
+    }
+
+    .red-verge-base { border-left-color: #ff3232; }
+    .fallow-teeth-base { border-left-color: #c8966b; }
+    .mercenary-base { border-left-color: #969696; }
+    .clan-base { border-left-color: #ff6432; }
+
+    .details-panel {
+        background: rgba(0, 0, 0, 0.9) !important;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #444;
+        font-size: 11px;
+        line-height: 1.4;
+        margin-top: 15px;
+    }
+
+    .details-title {
+        color: #fff !important;
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 13px;
+    }
+
+    #details-content {
+        color: #e0e0e0 !important;
+    }
+
+    #details-content strong {
+        color: #fff !important;
+    }
+
+    #details-content br {
+        line-height: 1.6;
+    }
+
+    .control-indicator {
+        font-size: 8px;
+        padding: 2px 4px;
+        border-radius: 8px;
+        margin: 2px 0;
+        display: inline-block;
+    }
+
+    .clan-controlled {
+        background: rgba(255, 100, 50, 0.3);
+        color: #ff6432;
+        border: 1px solid #ff6432;
+    }
+
+    .faction-controlled {
+        background: rgba(200, 50, 25, 0.3);
+        color: #c8321a;
+        border: 1px solid #c8321a;
+    }
+
+    .contested-zone {
+        background: rgba(255, 255, 100, 0.3);
+        color: #ffff64;
+        border: 1px solid #ffff64;
+    }
+
+    .no-mans-land {
+        background: rgba(100, 100, 100, 0.3);
+        color: #646464;
+        border: 1px solid #646464;
+    }
+
+    .environmental-hazard {
+        background: rgba(255, 50, 50, 0.3);
+        color: #ff3232;
+        border: 1px solid #ff3232;
+    }
+
+    .territory-druin { color: #969696 !important; }
+    .territory-crux { color: #64c896 !important; }
+</style>
+```
+
+</head>
+<body>
+    <div class="title">THE VERGE WASTES</div>
+    <div class="subtitle">Lawless Territories Beyond Consortium Control</div>
+
+```
+<div class="map-container">
+    
+    <!-- SCORCH RIFT -->
+    <div class="territory-container scorch-territory">
+        <div class="territory-header">SCORCH RIFT - THE BURNING LANDS</div>
+        <div class="zones-grid">
+            <div class="zone volcanic-core" onclick="showDetails('volcano')">
+                <div class="zone-title">VOLCANIC CORE</div>
+                <div>Active Lava Zones</div>
+                <div class="zone-subtitle">Red Verge Stronghold</div>
+                <div class="control-indicator faction-controlled">RED VERGE</div>
+            </div>
+
+            <div class="zone ash-markets" onclick="showDetails('markets')">
+                <div class="zone-title">ASH MARKETS</div>
+                <div>Mobile Trading Posts</div>
+                <div class="zone-subtitle">Nomadic Commerce</div>
+                <div class="control-indicator clan-controlled">MOBILE</div>
+            </div>
+
+            <div class="zone thermal-warrens" onclick="showDetails('warrens')">
+                <div class="zone-title">THERMAL WARRENS</div>
+                <div>Underground Communities</div>
+                <div class="zone-subtitle">Geothermal Power</div>
+                <div class="control-indicator clan-controlled">CLAN HELD</div>
+            </div>
+
+            <div class="zone clan-territories" onclick="showDetails('clans')">
+                <div class="zone-title">CLAN TERRITORIES</div>
+                <div>Tribal Holdings</div>
+                <div class="zone-subtitle">Combat Trials</div>
+                <div class="control-indicator contested-zone">CONTESTED</div>
+            </div>
+
+            <div class="danger-warning">⚠️ EXTREME HAZARD: Pyroclastic flows, toxic gases, obsidian storms ⚠️</div>
+        </div>
+    </div>
+
+    <!-- DRUIN FIELDS -->
+    <div class="territory-container druin-territory">
+        <div class="territory-header territory-druin">DRUIN FIELDS - THE TECH GRAVEYARD</div>
+        <div class="zones-grid">
+            <div class="zone crash-sites" onclick="showDetails('cradle')">
+                <div class="zone-title">THE CRADLE</div>
+                <div>Orbital Habitat Wreck</div>
+                <div class="zone-subtitle">Kael's Rust Throne</div>
+                <div class="control-indicator faction-controlled">FALLOW TEETH</div>
+            </div>
+
+            <div class="zone salvage-yards" onclick="showDetails('yards')">
+                <div class="zone-title">SALVAGE YARDS</div>
+                <div>Active Scrap Operations</div>
+                <div class="zone-subtitle">Circuit Bazaar</div>
+                <div class="control-indicator clan-controlled">SCAVENGER GANGS</div>
+            </div>
+
+            <div class="zone tech-graveyards" onclick="showDetails('archives')">
+                <div class="zone-title">THE ARCHIVES</div>
+                <div>Tech Preservation Bunker</div>
+                <div class="zone-subtitle">Pre-Collapse Knowledge</div>
+                <div class="control-indicator no-mans-land">ISOLATIONIST</div>
+            </div>
+
+            <div class="zone signal-zones" onclick="showDetails('signal')">
+                <div class="zone-title">SIGNAL HILL</div>
+                <div>Communication Towers</div>
+                <div class="zone-subtitle">Ghost Data Fragments</div>
+                <div class="control-indicator contested-zone">NEUTRAL ZONE</div>
+            </div>
+
+            <div class="danger-warning">⚠️ HAZARD WARNING: Electromagnetic storms, radiation pockets, unstable structures ⚠️</div>
+        </div>
+    </div>
+
+    <!-- CRUXWATER SPIRAL -->
+    <div class="territory-container crux-territory">
+        <div class="territory-header territory-crux">CRUXWATER SPIRAL - THE POISONED WATERS</div>
+        <div class="zones-grid">
+            <div class="zone floating-settlements" onclick="showDetails('floatilla')">
+                <div class="zone-title">THE FLOATILLA</div>
+                <div>Largest Mobile Platform</div>
+                <div class="zone-subtitle">Trading Hub</div>
+                <div class="control-indicator clan-controlled">MARITIME CLANS</div>
+            </div>
+
+            <div class="zone toxic-spirals" onclick="showDetails('depths')">
+                <div class="zone-title">THE DEPTHS</div>
+                <div>Submerged Ruins</div>
+                <div class="zone-subtitle">Pre-Collapse Vaults</div>
+                <div class="control-indicator environmental-hazard">TOXIC ZONE</div>
+            </div>
+
+            <div class="zone smuggler-routes" onclick="showDetails('periphery')">
+                <div class="zone-title">THE PERIPHERY</div>
+                <div>Outer Ring Settlements</div>
+                <div class="zone-subtitle">Exile Communities</div>
+                <div class="control-indicator no-mans-land">INDEPENDENT</div>
+            </div>
+
+            <div class="zone water-clans" onclick="showDetails('distillation')">
+                <div class="zone-title">DISTILLATION SPIRES</div>
+                <div>Water Processing Towers</div>
+                <div class="zone-subtitle">Survival Resource</div>
+                <div class="control-indicator clan-controlled">WATER CLANS</div>
+            </div>
+
+            <div class="danger-warning">⚠️ BIOHAZARD: Contaminated water, hallucinogenic fog, chemical burns ⚠️</div>
+        </div>
+    </div>
+
+    <div class="faction-bases">
+        <div class="faction-title">Major Faction Strongholds</div>
+        <div class="faction-item red-verge-base"><strong>Red Verge:</strong> Cinderwell Command (Scorch Rift volcanic crater)</div>
+        <div class="faction-item fallow-teeth-base"><strong>Fallow Teeth:</strong> Kael's Lookout (Rust Throne in The Cradle)</div>
+        <div class="faction-item mercenary-base"><strong>Mercenary Companies:</strong> Mobile camps throughout all territories</div>
+        <div class="faction-item clan-base"><strong>Ash Clans:</strong> Thermal warrens and volcanic strongholds</div>
+        <div class="faction-item clan-base"><strong>Tech Worshippers:</strong> The Archives bunker (Druin Fields)</div>
+        <div class="faction-item clan-base"><strong>Maritime Clans:</strong> The Floatilla and water processing spires</div>
+    </div>
+
+    <div class="details-panel" id="sector-info">
+        <div class="details-title">Zone Information</div>
+        <div id="details-content">Tap any zone above to view detailed information about hazards, resources, and faction control.</div>
+    </div>
+</div>
+
+<script>
+    const zoneData = {
+        volcano: {
+            title: "VOLCANIC CORE - Red Verge Stronghold",
+            content: `
+            <strong>Control:</strong> Red Verge Military Faction<br>
+            <strong>Population:</strong> 180,000 (Combat trained)<br><br>
+            <strong>Key Locations:</strong><br>
+            • The Cinderwell: Massive obsidian crater headquarters<br>
+            • Burning Trials Arena: Combat proving grounds<br>
+            • Lava Forge Weapons: Manufacturing in active flows<br>
+            • Command Bunkers: Built into volcanic stone<br>
+            • Recruitment Centers: Testing warrior candidates<br><br>
+            <strong>Leadership:</strong> Commander Serrick Venn "Bloodfist"<br>
+            <strong>Environment:</strong> 40-60°C surface temps, toxic volcanic gases<br>
+            <strong>Military Strength:</strong> 15,000 active fighters, heavy weapons<br>
+            <strong>Resources:</strong> Rare volcanic minerals, obsidian glass, thermal energy
+            `
+        },
+        markets: {
+            title: "ASH MARKETS - Mobile Trading Posts",
+            content: `
+            <strong>Control:</strong> Nomadic Trader Clans<br>
+            <strong>Population:</strong> 45,000 (Constantly moving)<br><br>
+            <strong>Mobile Operations:</strong><br>
+            • Built on massive tank treads from abandoned mining equipment<br>
+            • Relocate based on volcanic activity patterns<br>
+            • Specialized in rare mineral trading<br>
+            • Black market weapons and technology<br>
+            • Information brokerage between factions<br><br>
+            <strong>Trade Goods:</strong> Volcanic glass, heat-resistant materials, weapons<br>
+            <strong>Currency:</strong> Barter system, rare tech components<br>
+            <strong>Schedule:</strong> Follows predictable 30-day circuit routes<br>
+            <strong>Neutrality:</strong> Will trade with any faction including Consortium
+            `
+        },
+        warrens: {
+            title: "THERMAL WARRENS - Underground Communities",
+            content: `
+            <strong>Control:</strong> Independent Clan Alliances<br>
+            <strong>Population:</strong> 220,000 (Families)<br><br>
+            <strong>Underground Network:</strong><br>
+            • Built around natural steam vents<br>
+            • Geothermal power independent of Consortium grid<br>
+            • Complex tunnel systems with hidden entrances<br>
+            • Hydroponic food production using volcanic soil<br>
+            • Workshop forges for metalworking<br><br>
+            <strong>Clans:</strong> Seven major family groups<br>
+            <strong>Governance:</strong> Council of eldest from each clan<br>
+            <strong>Defense:</strong> Natural maze-like tunnels, heat traps<br>
+            <strong>Economy:</strong> Self-sufficient, occasional trade with surface
+            `
+        },
+        clans: {
+            title: "CLAN TERRITORIES - Tribal Holdings",
+            content: `
+            <strong>Control:</strong> Multiple Competing Clans<br>
+            <strong>Population:</strong> 320,000 (Warrior culture)<br><br>
+            <strong>Major Clans:</strong><br>
+            • Emberforge: Master metalworkers and weapon smiths<br>
+            • Ashwalker: Scout specialists and information traders<br>
+            • Bloodstone: Elite combat troops, Red Verge allies<br>
+            • Fireborn: Ritual combat specialists<br>
+            • Cinderkin: Volcanic glass craftsmen<br><br>
+            <strong>Territories:</strong> Defined by ritual combat victories<br>
+            <strong>Government:</strong> Clan lord hierarchy, combat trials<br>
+            <strong>Conflict:</strong> Constant territorial disputes<br>
+            <strong>Alliance:</strong> Many clans supply fighters to Red Verge
+            `
+        },
+        cradle: {
+            title: "THE CRADLE - Orbital Habitat Wreck",
+            content: `
+            <strong>Control:</strong> Kael Riven & Fallow Teeth<br>
+            <strong>Population:</strong> 85,000 (Salvagers)<br><br>
+            <strong>Kael's Rust Throne:</strong><br>
+            • Built inside crashed orbital habitat<br>
+            • Command center in former navigation bridge<br>
+            • Largest salvage operation outside Consortium<br>
+            • Warehouses of pre-Collapse technology<br>
+            • Defended by repurposed military drones<br><br>
+            <strong>Leadership:</strong> Kael Riven "Rustlord"<br>
+            <strong>Operation:</strong> Massive tech salvage and refurbishment<br>
+            <strong>Resources:</strong> Rare pre-Collapse technology<br>
+            <strong>Defense:</strong> Automated weapon systems, loyal crews
+            `
+        },
+        yards: {
+            title: "SALVAGE YARDS - Active Scrap Operations",
+            content: `
+            <strong>Control:</strong> Independent Scavenger Gangs<br>
+            <strong>Population:</strong> 150,000 (Techs and families)<br><br>
+            <strong>Circuit Bazaar Operations:</strong><br>
+            • Black market trading center<br>
+            • Specialized in functional pre-Collapse components<br>
+            • Barter system using tech components as currency<br>
+            • Modification services for salvaged equipment<br>
+            • Underground information network<br><br>
+            <strong>Gangs:</strong> 12 major salvage operations<br>
+            <strong>Competition:</strong> Territorial disputes over salvage rights<br>
+            <strong>Products:</strong> Functional technology, modified weapons<br>
+            <strong>Customers:</strong> All factions including rebels and Consortium
+            `
+        },
+        archives: {
+            title: "THE ARCHIVES - Tech Preservation Bunker",
+            content: `
+            <strong>Control:</strong> Tech-Worshipping Isolationists<br>
+            <strong>Population:</strong> 8,000 (Technicians and priests)<br><br>
+            <strong>Preservation Mission:</strong><br>
+            • Underground bunker complex<br>
+            • Largest collection of pre-Collapse technology<br>
+            • Functioning pre-Collapse engineering knowledge<br>
+            • Religious reverence for lost technology<br>
+            • Strict access control and secrecy<br><br>
+            <strong>Leadership:</strong> Tech-Priest hierarchy<br>
+            <strong>Resources:</strong> Irreplaceable pre-Collapse data<br>
+            <strong>Policy:</strong> Neutral but paranoid, rare outside contact<br>
+            <strong>Defense:</strong> Advanced security systems, hidden entrances
+            `
+        },
+        signal: {
+            title: "SIGNAL HILL - Communication Towers",
+            content: `
+            <strong>Control:</strong> Neutral Zone (No permanent authority)<br>
+            <strong>Population:</strong> 15,000 (Transient)<br><br>
+            <strong>Communication Hub:</strong><br>
+            • Maze of ancient communication towers<br>
+            • Ghost signals from collapsed networks<br>
+            • Pre-Collapse data fragments occasionally retrieved<br>
+            • Neutral meeting ground for faction negotiations<br>
+            • Information trading center<br><br>
+            <strong>Phenomena:</strong> Echo data transmissions bouncing between towers<br>
+            <strong>Users:</strong> All factions maintain monitoring stations<br>
+            <strong>Economy:</strong> Information brokerage and signal interception<br>
+            <strong>Rules:</strong> Enforced neutrality, no permanent occupation
+            `
+        },
+        floatilla: {
+            title: "THE FLOATILLA - Mobile Maritime City",
+            content: `
+            <strong>Control:</strong> Maritime Clan Council<br>
+            <strong>Population:</strong> 120,000 (Platform dwellers)<br><br>
+            <strong>Mobile Platform System:</strong><br>
+            • Interconnected floating platforms<br>
+            • Can reconfigure and separate during threats<br>
+            • Trading hub for all water-based communities<br>
+            • Sophisticated water purification systems<br>
+            • Mobile throughout spiral following currents<br><br>
+            <strong>Leadership:</strong> Rotating council of platform captains<br>
+            <strong>Economy:</strong> Water purification, transport services<br>
+            <strong>Defense:</strong> Can scatter into hundreds of small platforms<br>
+            <strong>Trade:</strong> Essential stop for cross-territorial commerce
+            `
+        },
+        depths: {
+            title: "THE DEPTHS - Submerged Ruins",
+            content: `
+            <strong>Control:</strong> Environmental Hazard Zone (Uncontrolled)<br>
+            <strong>Population:</strong> Unknown (Likely zero permanent)<br><br>
+            <strong>Submerged Structures:</strong><br>
+            • Pre-Collapse urban ruins beneath toxic water<br>
+            • Sealed vaults containing untouched technology<br>
+            • Extremely dangerous chemical contamination<br>
+            • Occasional salvage expeditions by brave/desperate crews<br>
+            • Rumored to contain pre-Collapse weapons<br><br>
+            <strong>Hazards:</strong> Chemical burns, respiratory damage<br>
+            <strong>Salvage Value:</strong> Potentially enormous but extremely risky<br>
+            <strong>Access:</strong> Requires specialized protective equipment<br>
+            <strong>Mortality Rate:</strong> 80%+ for unauthorized expeditions
+            `
+        },
+        periphery: {
+            title: "THE PERIPHERY - Exile Communities",
+            content: `
+            <strong>Control:</strong> Independent Settlement Network<br>
+            <strong>Population:</strong> 95,000 (Exiles and refugees)<br><br>
+            <strong>Exile Settlements:</strong><br>
+            • Outermost ring where contaminant levels are lowest<br>
+            • Modified agriculture in less toxic areas<br>
+            • Communities of Consortium deserters<br>
+            • Rebel families seeking safety from faction wars<br>
+            • New society experiments with minimal technology<br><br>
+            <strong>Philosophy:</strong> Rejection of both Consortium and faction violence<br>
+            <strong>Economy:</strong> Subsistence agriculture, crafts<br>
+            <strong>Politics:</strong> Democratic councils, pacifist principles<br>
+            <strong>Challenges:</strong> Vulnerable to raiding, environmental threats
+            `
+        },
+        distillation: {
+            title: "DISTILLATION SPIRES - Water Processing",
+            content: `
+            <strong>Control:</strong> Water Clan Confederation<br>
+            <strong>Population:</strong> 65,000 (Engineers and families)<br><br>
+            <strong>Processing Operations:</strong><br>
+            • Towers rising from larger floating settlements<br>
+            • Advanced filtration systems salvaged from Consortium<br>
+            • Converts toxic water to potable supply<br>
+            • Essential resource for all Spiral communities<br>
+            • Protected by all clans through mutual agreement<br><br>
+            <strong>Technology:</strong> Modified Consortium water purification<br>
+            <strong>Product:</strong> Clean water, medicinal compounds<br>
+            <strong>Politics:</strong> Neutral resource provider<br>
+            <strong>Defense:</strong> Protected by inter-clan treaties
+            `
+        }
+    };
+
+    function showDetails(zone) {
+        const info = zoneData[zone];
+        if (info) {
+            document.getElementById('details-content').innerHTML = `
+                <div class="details-title">${info.title}</div>
+                ${info.content}
+            `;
+            
+            // Scroll to details on mobile
+            if (window.innerWidth <= 768) {
+                document.getElementById('sector-info').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }
+        }
+    }
+
+    // Add touch feedback
+    document.querySelectorAll('.zone').forEach(zone => {
+        zone.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.95)';
+            this.style.opacity = '0.8';
+        });
+        
+        zone.addEventListener('touchend', function() {
+            this.style.transform = '';
+            this.style.opacity = '';
+        });
+    });
+</script>
+```
